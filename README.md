@@ -89,3 +89,9 @@ npm run dev
 ## Default URLs
 - **User Service**: http://localhost:5000
 - **Post Service**: http://localhost:5001
+
+---
+
+## Postman Collection
+In the both microservices I have added the postman collection in the postman folder, so you can just import both collections in you postman to use the APIs.
+
