@@ -1,0 +1,26 @@
+📌 🔑There are two ways to sign/verify a JWT
+1️⃣ Symmetric signing — HS256
+2️⃣ Asymmetric signing — RS256
+
+✅ 1️⃣ Symmetric (HS256) — Same secret
+  - You sign the JWT and verify it using the same shared secret (JWT_SECRET).
+  - So both User Service & Post Service must have the exact same secret key in their .env.
+
+✅ 2️⃣ Asymmetric (RS256) — Private/Public key pair
+  - You sign the JWT using a private key.
+  - You verify the JWT using a public key.
+
+
+Key difference:
+  - The private key stays only in User Service — nobody else should have it.
+  - The public key is safe to share — other services (like Post Service) can verify the JWT’s signature but cannot sign new tokens.
+
+✅ How to create these files - RUN these commands.
+  # 1️⃣ Generate a private key (2048-bit RSA)
+    openssl genrsa -out keys/private.key 2048
+  
+  # 2️⃣ Extract the public key from the private key
+    openssl rsa -in keys/private.key -pubout -out keys/public.key
+  cp keys/public.key ../postService/keys/public.key
+
+

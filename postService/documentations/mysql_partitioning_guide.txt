@@ -1,0 +1,222 @@
+===============================================
+MySQL Table Partitioning - Complete Guide
+===============================================
+
+📌 WHAT IS TABLE PARTITIONING?
+--------------------------------
+- Partitioning splits a table’s rows into smaller physical chunks (partitions).
+- All partitions together make up one logical table.
+- Used for managing large data sets efficiently.
+- Supported in MySQL for RANGE, LIST, HASH, KEY.
+
+✅ Benefits:
+- Faster query performance on large tables.
+- Manage old/new data separately.
+- Drop/merge partitions for archiving.
+- Better maintenance.
+
+---
+
+📌 PARTITIONING TYPES SUPPORTED IN MYSQL
+-----------------------------------------------
+
+1️⃣ RANGE Partitioning  
+- Partitions rows based on ranges of column values.
+
+2️⃣ LIST Partitioning  
+- Partitions rows based on a list of discrete column values.
+
+3️⃣ HASH Partitioning  
+- Partitions rows using a user-defined expression’s hash value.
+
+4️⃣ KEY Partitioning  
+- Like HASH, but hash is generated internally by MySQL.
+
+---
+
+📌 BASIC EXAMPLE: RANGE PARTITIONING
+-----------------------------------------------
+
+-- Create table partitioned by RANGE
+CREATE TABLE posts (
+  id INT NOT NULL,
+  title VARCHAR(255),
+  PRIMARY KEY (id)
+)
+PARTITION BY RANGE (id) (
+  PARTITION p0 VALUES LESS THAN (10),
+  PARTITION p1 VALUES LESS THAN (20),
+  PARTITION pMax VALUES LESS THAN MAXVALUE
+);
+
+-- Insert data:
+INSERT INTO posts (id, title) VALUES (5, 'First Post'), (15, 'Second Post'), (25, 'Third Post');
+
+-- Query:
+SELECT * FROM posts;
+
+---
+
+📌 LIST PARTITIONING EXAMPLE
+-----------------------------------------------
+
+-- Create table partitioned by LIST
+CREATE TABLE sales (
+  region VARCHAR(10) NOT NULL,
+  amount DECIMAL(10, 2)
+)
+PARTITION BY LIST COLUMNS(region) (
+  PARTITION pNorth VALUES IN ('NORTH'),
+  PARTITION pSouth VALUES IN ('SOUTH'),
+  PARTITION pEast VALUES IN ('EAST'),
+  PARTITION pWest VALUES IN ('WEST')
+);
+
+INSERT INTO sales VALUES ('NORTH', 1000.00), ('EAST', 500.00);
+
+---
+
+📌 HASH PARTITIONING EXAMPLE
+-----------------------------------------------
+
+-- Create table with HASH
+CREATE TABLE logs (
+  id INT NOT NULL,
+  message VARCHAR(255),
+  PRIMARY KEY (id)
+)
+PARTITION BY HASH(id)
+PARTITIONS 4;
+
+-- This will create 4 hash partitions automatically.
+
+---
+
+📌 KEY PARTITIONING EXAMPLE
+-----------------------------------------------
+
+-- KEY partitioning uses MySQL’s internal hash function.
+CREATE TABLE users (
+  id INT NOT NULL AUTO_INCREMENT,
+  name VARCHAR(50),
+  PRIMARY KEY (id)
+)
+PARTITION BY KEY(id)
+PARTITIONS 4;
+
+---
+
+📌 HOW TO ADD PARTITIONS TO AN EXISTING TABLE
+-----------------------------------------------
+
+✅ MySQL allows adding partitions with ALTER TABLE!
+
+-- Example:
+ALTER TABLE posts
+PARTITION BY RANGE (id) (
+  PARTITION p0 VALUES LESS THAN (10),
+  PARTITION p1 VALUES LESS THAN (20),
+  PARTITION pMax VALUES LESS THAN MAXVALUE
+);
+
+-- ⚠️ Note: This works if the table has no incompatible data.
+-- If rows exist that do not match the new partition ranges, ALTER will fail.
+
+---
+
+📌 HOW TO ADD A NEW PARTITION RANGE
+-----------------------------------------------
+
+-- Example: Add new range for id < 30
+ALTER TABLE posts
+ADD PARTITION (
+  PARTITION p30 VALUES LESS THAN (30)
+);
+
+---
+
+📌 HOW TO REMOVE OR DROP A PARTITION
+-----------------------------------------------
+
+-- Example: Drop an existing partition
+ALTER TABLE posts DROP PARTITION p30;
+
+---
+
+📌 HOW TO SEE WHICH PARTITION DATA GOES TO
+-----------------------------------------------
+
+-- Use EXPLAIN PARTITIONS to check:
+EXPLAIN PARTITIONS SELECT * FROM posts WHERE id = 5;
+
+---
+
+📌 IMPORTANT RULES & LIMITATIONS
+-----------------------------------------------
+
+✅ Primary key must include the partition key.
+
+✅ You cannot un-partition a table — instead, recreate it if needed.
+
+✅ Not all storage engines support all partition types.
+   - InnoDB supports RANGE, LIST, HASH, KEY.
+
+✅ Always check that rows match the partition definitions.
+
+✅ Use partitions carefully — too many small partitions can reduce performance.
+
+---
+
+📌 GOOD PRACTICES
+-----------------------------------------------
+
+✔️ Plan partitions ahead — best done when creating the table.
+
+✔️ Use RANGE for time-series or numeric ranges.
+
+✔️ Use LIST for discrete groups (regions, categories).
+
+✔️ Use HASH or KEY for balanced distribution.
+
+✔️ Monitor partitions with:
+   SHOW CREATE TABLE posts;
+
+✔️ Keep an eye on unused/out-of-bound data — rows with no matching partition will fail to insert!
+
+---
+
+📌 FULL EXAMPLE: MIGRATE NON-PARTITIONED TABLE TO PARTITIONED
+-----------------------------------------------
+
+-- Suppose you have:
+CREATE TABLE old_posts (
+  id INT NOT NULL,
+  title VARCHAR(255),
+  PRIMARY KEY (id)
+);
+
+-- 1. Create new partitioned table
+CREATE TABLE posts_new (
+  id INT NOT NULL,
+  title VARCHAR(255),
+  PRIMARY KEY (id)
+)
+PARTITION BY RANGE (id) (
+  PARTITION p0 VALUES LESS THAN (10),
+  PARTITION p1 VALUES LESS THAN (20),
+  PARTITION pMax VALUES LESS THAN MAXVALUE
+);
+
+-- 2. Copy data
+INSERT INTO posts_new (id, title) SELECT id, title FROM old_posts;
+
+-- 3. Drop old, rename new
+DROP TABLE old_posts;
+RENAME TABLE posts_new TO posts;
+
+---
+
+✅ MySQL makes adding partitions easier than PostgreSQL, but plan carefully!
+
+===============================================
+✅ END OF FILE ✅

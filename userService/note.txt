@@ -1,0 +1,170 @@
+🚀 1️⃣ Core JavaScript — Must-Know Deep Questions
+These test how well you understand the language under Node.
+
+✅ Closures & Scope
+
+Explain closures with a real-life use case.
+
+How do closures help with data privacy?
+
+How does the event loop interact with closures?
+
+What problems can a closure cause?
+
+✅ this keyword
+
+How does this behave in different contexts? (arrow vs. regular functions)
+
+What happens if you use this inside callbacks?
+
+How does bind, call, apply work internally?
+
+✅ Promises & async/await
+
+How are promises implemented internally?
+
+How does the microtask queue work with promises?
+
+Difference between Promise.all, Promise.race, Promise.allSettled — when to use what?
+
+How does async/await syntax sugar work under the hood?
+
+✅ Event Loop & Concurrency
+
+Explain the phases of the Node.js event loop.
+
+How does Node handle timers, I/O callbacks, process.nextTick, setImmediate?
+
+What’s the difference between microtasks and macrotasks?
+
+What happens when you block the event loop?
+
+✅ Prototypes & Inheritance
+
+How does prototypal inheritance work?
+
+What happens when you new a constructor?
+
+Explain Object.create vs ES6 classes.
+
+✅ Module system
+
+Difference between ES modules and CommonJS?
+
+How does require actually work?
+
+Circular dependency handling.
+
+✅ Memory leaks
+
+Common patterns that cause leaks in JS?
+
+How to detect and fix?
+
+🚀 2️⃣ Node.js — Real Internals
+✅ Node Architecture
+
+Explain how Node handles I/O.
+
+How is libuv involved?
+
+What is the role of the thread pool?
+
+Which tasks go to the thread pool vs. the event loop?
+
+✅ Streams
+
+Difference between streams and buffers?
+
+How do you handle backpressure?
+
+Example of a custom stream.
+
+✅ Cluster Module & Child Processes
+
+How does Node handle multi-core scaling?
+
+Difference between cluster and child_process?
+
+Use case for a worker thread.
+
+✅ Error Handling
+
+uncaughtException vs. unhandledRejection
+
+How to gracefully shut down a Node server on fatal errors?
+
+✅ Process & OS module
+
+How do you handle signals (like SIGTERM, SIGINT)?
+
+Explain process.env, process.nextTick.
+
+✅ Package management
+
+How does npm resolve dependencies?
+
+What is a lock file for?
+
+Difference between dependencies and devDependencies.
+
+🚀 3️⃣ Server-Side: Production-Level Questions
+✅ API Performance
+
+How to handle high concurrency in Node?
+
+How to use connection pooling (DB, Redis, etc.)?
+
+How to tune the thread pool?
+
+✅ Graceful Shutdown
+
+What is graceful shutdown?
+
+How do you drain connections and handle inflight requests?
+
+✅ Scaling
+
+Explain vertical vs. horizontal scaling for Node apps.
+
+How do you handle sticky sessions?
+
+Load balancer + cluster mode — how do they work together?
+
+✅ Security
+
+How to prevent common attacks: XSS, CSRF, SSRF in Node?
+
+How to manage secrets?
+
+Best practices for JWT and sessions.
+
+✅ Logging & Monitoring
+
+How do you implement structured logging?
+
+What’s the difference between application logs and access logs?
+
+Tools you’ve used for monitoring Node services.
+
+✅ Advanced Patterns
+
+Event-driven architecture with Node (Kafka, RabbitMQ).
+
+API Gateway pattern — rate limiting, versioning, request tracing.
+
+Circuit breaker pattern.
+
+🧩 4️⃣ Practical — Be Ready to Talk About:
+✅ Code Example: Write a simple HTTP server without using Express.
+✅ Implement streaming large files.
+✅ Gracefully handle process signals (SIGINT/SIGTERM).
+✅ Debug memory leaks — using Chrome DevTools or clinic.js.
+
+📌 Sample 5 Killer Questions
+Here’s a quick sample you can try now:
+1️⃣ Explain how the Node event loop works.
+2️⃣ Write a custom Readable stream.
+3️⃣ Show how you’d handle 10k concurrent connections.
+4️⃣ How do you secure an Express API?
+5️⃣ Explain difference between process.nextTick and setImmediate.

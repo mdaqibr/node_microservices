@@ -1,0 +1,215 @@
+==================================================
+PostgreSQL Table Partitioning - Complete Guide
+==================================================
+
+📌 WHAT IS TABLE PARTITIONING?
+--------------------------------
+- Partitioning is splitting a large logical table into smaller physical pieces (partitions).
+- Improves query performance by scanning only relevant partitions.
+- Helps with data management (e.g., archiving old partitions).
+- PostgreSQL supports native declarative partitioning since version 10.
+
+---
+
+📌 TYPES OF PARTITIONING IN POSTGRESQL
+-----------------------------------------
+
+1️⃣ RANGE PARTITIONING
+  - Data is divided into continuous ranges.
+  - E.g., id ranges, date ranges.
+  - Syntax: PARTITION BY RANGE (column)
+
+2️⃣ LIST PARTITIONING
+  - Data is divided by matching discrete values.
+  - E.g., region IN ('US', 'EU').
+  - Syntax: PARTITION BY LIST (column)
+
+3️⃣ HASH PARTITIONING
+  - Rows are distributed using a hash function for even distribution.
+  - Useful for sharding large tables evenly.
+  - Syntax: PARTITION BY HASH (column)
+
+---
+
+📌 EXAMPLE: RANGE PARTITIONING
+-----------------------------------------
+
+-- Step 1: Create parent table
+CREATE TABLE posts (
+  id INT,
+  title TEXT
+) PARTITION BY RANGE (id);
+
+-- Step 2: Create child partitions
+CREATE TABLE posts_1_10 PARTITION OF posts
+  FOR VALUES FROM (1) TO (11);
+
+CREATE TABLE posts_11_20 PARTITION OF posts
+  FOR VALUES FROM (11) TO (21);
+
+---
+
+📌 EXAMPLE: LIST PARTITIONING
+-----------------------------------------
+
+-- Parent table
+CREATE TABLE sales (
+  region TEXT,
+  amount NUMERIC
+) PARTITION BY LIST (region);
+
+-- Partitions
+CREATE TABLE sales_us PARTITION OF sales
+  FOR VALUES IN ('US');
+
+CREATE TABLE sales_eu PARTITION OF sales
+  FOR VALUES IN ('EU');
+
+---
+
+📌 EXAMPLE: HASH PARTITIONING
+-----------------------------------------
+
+-- Parent
+CREATE TABLE logs (
+  id SERIAL,
+  message TEXT
+) PARTITION BY HASH (id);
+
+-- Child partitions
+CREATE TABLE logs_p0 PARTITION OF logs
+  FOR VALUES WITH (MODULUS 4, REMAINDER 0);
+
+CREATE TABLE logs_p1 PARTITION OF logs
+  FOR VALUES WITH (MODULUS 4, REMAINDER 1);
+
+CREATE TABLE logs_p2 PARTITION OF logs
+  FOR VALUES WITH (MODULUS 4, REMAINDER 2);
+
+CREATE TABLE logs_p3 PARTITION OF logs
+  FOR VALUES WITH (MODULUS 4, REMAINDER 3);
+
+---
+
+📌 HOW INSERTS WORK
+-----------------------------------------
+- You insert into the **parent table**.
+- PostgreSQL routes the row to the correct child partition.
+Example:
+  INSERT INTO posts (id, title) VALUES (5, 'Hello');
+  --> Will land in posts_1_10 if id=5.
+
+---
+
+📌 HOW TO ADD A NEW PARTITION
+-----------------------------------------
+
+-- Example: Add another range for id 21-30
+CREATE TABLE posts_21_30 PARTITION OF posts
+  FOR VALUES FROM (21) TO (31);
+
+-- Example: Add LIST partition for region 'APAC'
+CREATE TABLE sales_apac PARTITION OF sales
+  FOR VALUES IN ('APAC');
+
+---
+
+📌 HOW TO SEE WHICH PARTITION HOLDS A ROW
+-----------------------------------------
+
+-- See which child table rows belong to:
+SELECT tableoid::regclass, * FROM posts;
+
+---
+
+📌 HOW TO REMOVE A PARTITION
+-----------------------------------------
+
+-- Detach and drop a partition:
+ALTER TABLE posts DETACH PARTITION posts_1_10;
+DROP TABLE posts_1_10;
+
+---
+
+📌 HOW TO ATTACH AN EXISTING TABLE AS A PARTITION
+-----------------------------------------
+
+-- Create a standalone table with compatible rows
+CREATE TABLE posts_old_part (LIKE posts INCLUDING ALL);
+
+-- Insert rows matching the target range
+INSERT INTO posts_old_part VALUES (5, 'Sample');
+
+-- Attach it as a partition
+ALTER TABLE posts ATTACH PARTITION posts_old_part
+  FOR VALUES FROM (1) TO (11);
+
+---
+
+📌 IMPORTANT: YOU CANNOT ALTER AN EXISTING TABLE TO ADD PARTITIONING DIRECTLY
+-----------------------------------------
+
+🚫 PostgreSQL does NOT support `ALTER TABLE ... PARTITION BY` after the fact, but the MySql supports.
+
+✅ Correct way if table already exists:
+  1. Create new partitioned table.
+  2. Define child partitions.
+  3. Copy data from old table.
+  4. Swap tables.
+
+Example:
+
+-- 1. Create new partitioned table
+CREATE TABLE posts_new (
+  id INT,
+  title TEXT
+) PARTITION BY RANGE (id);
+
+CREATE TABLE posts_1_10 PARTITION OF posts_new
+  FOR VALUES FROM (1) TO (11);
+
+CREATE TABLE posts_11_20 PARTITION OF posts_new
+  FOR VALUES FROM (11) TO (21);
+
+-- 2. Copy data
+INSERT INTO posts_new (id, title)
+SELECT id, title FROM posts;
+
+-- 3. Drop old table
+DROP TABLE posts;
+
+-- 4. Rename new table
+ALTER TABLE posts_new RENAME TO posts;
+
+---
+
+📌 ZERO-DOWNTIME MIGRATION FOR PARTITIONING
+-----------------------------------------
+
+In production:
+✅ Use triggers or logical replication.
+✅ Example:
+  - Create new partitioned table.
+  - Add AFTER INSERT trigger to copy new rows to both tables.
+  - Migrate old rows batch by batch.
+  - Swap over when fully synced.
+
+---
+
+📌 GOOD PRACTICES
+-----------------------------------------
+
+✔️ Plan partitioning before deploying to production.
+✔️ Use `RANGE` for time-series data, `LIST` for categories.
+✔️ Index partitions for faster queries.
+✔️ Keep partitions manageable — not too many, not too big.
+✔️ Use `pg_partman` for automatic time-based partition management.
+✔️ Monitor for out-of-bound inserts — they fail if no matching partition exists.
+
+---
+
+📌 BONUS: CHECK CONSTRAINTS ON PARTITIONS
+-----------------------------------------
+
+PostgreSQL automatically adds constraints for partition bounds.
+You can add more:

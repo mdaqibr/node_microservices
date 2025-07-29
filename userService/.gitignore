@@ -1,0 +1,12 @@
+# Node
+node_modules/
+.env
+keys/
+*.log
+
+# VSCode
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
