@@ -1,0 +1,182 @@
+{
+	"info": {
+		"_postman_id": "604de589-8b23-42cb-8235-09b6a2a38ed1",
+		"name": "Post service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24352634"
+	},
+	"item": [
+		{
+			"name": "Create post",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc1MzcwNjY3NH0.k14JWG6YUSW9Xo1ryOuKB82Y3wMxEnuLr_RF3M2jPe6G7U1GX-l1MsB1W8JpZ4ZEyGn5exhIotwHvEFRnF-28nuvJeBz-XsISjBNMLR4RTmevhExGW9leTAZ0r5xMWqa-nPLtEerBVdPy3hDFQVu9nikB6Ign-e2fKYRRJw1H4FIQ81qNvA8pfJwW8lVQILvwB1t5QfrXcfzoqeyLVjYla9qDcisk_rGMT0ZGzDpn9E-rFVxvwehE7W2bzajlUJA5RQuKjVXlfYbywUGDrfRlC6z4UMpqhUSg1LGPvMCF8xdNfSn7E3fCHmVh2-vgZhNelqQ6vBN5UFq7RgeTx5G8g",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"user_id\": 1,\n    \"content\": \"Hey there I am using WhatsApp1.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/posts/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"posts",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check conn",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/check",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"check"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User posts",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/users/1/posts?page=1&limit=10",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"users",
+						"1",
+						"posts"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete post",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc1MzcwNjY3NH0.k14JWG6YUSW9Xo1ryOuKB82Y3wMxEnuLr_RF3M2jPe6G7U1GX-l1MsB1W8JpZ4ZEyGn5exhIotwHvEFRnF-28nuvJeBz-XsISjBNMLR4RTmevhExGW9leTAZ0r5xMWqa-nPLtEerBVdPy3hDFQVu9nikB6Ign-e2fKYRRJw1H4FIQ81qNvA8pfJwW8lVQILvwB1t5QfrXcfzoqeyLVjYla9qDcisk_rGMT0ZGzDpn9E-rFVxvwehE7W2bzajlUJA5RQuKjVXlfYbywUGDrfRlC6z4UMpqhUSg1LGPvMCF8xdNfSn7E3fCHmVh2-vgZhNelqQ6vBN5UFq7RgeTx5G8g",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5001/posts/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"posts",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update post",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc1MzcwNjY3NH0.k14JWG6YUSW9Xo1ryOuKB82Y3wMxEnuLr_RF3M2jPe6G7U1GX-l1MsB1W8JpZ4ZEyGn5exhIotwHvEFRnF-28nuvJeBz-XsISjBNMLR4RTmevhExGW9leTAZ0r5xMWqa-nPLtEerBVdPy3hDFQVu9nikB6Ign-e2fKYRRJw1H4FIQ81qNvA8pfJwW8lVQILvwB1t5QfrXcfzoqeyLVjYla9qDcisk_rGMT0ZGzDpn9E-rFVxvwehE7W2bzajlUJA5RQuKjVXlfYbywUGDrfRlC6z4UMpqhUSg1LGPvMCF8xdNfSn7E3fCHmVh2-vgZhNelqQ6vBN5UFq7RgeTx5G8g",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"user_id\": 1, \"content\": \"Update the first post content\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/posts/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"posts",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get post by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc1MzcwNjY3NH0.k14JWG6YUSW9Xo1ryOuKB82Y3wMxEnuLr_RF3M2jPe6G7U1GX-l1MsB1W8JpZ4ZEyGn5exhIotwHvEFRnF-28nuvJeBz-XsISjBNMLR4RTmevhExGW9leTAZ0r5xMWqa-nPLtEerBVdPy3hDFQVu9nikB6Ign-e2fKYRRJw1H4FIQ81qNvA8pfJwW8lVQILvwB1t5QfrXcfzoqeyLVjYla9qDcisk_rGMT0ZGzDpn9E-rFVxvwehE7W2bzajlUJA5RQuKjVXlfYbywUGDrfRlC6z4UMpqhUSg1LGPvMCF8xdNfSn7E3fCHmVh2-vgZhNelqQ6vBN5UFq7RgeTx5G8g",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5001/posts/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"posts",
+						"2"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
